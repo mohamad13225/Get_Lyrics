@@ -1,13 +1,25 @@
 import os
 import requests
 import json
-
+import re
 import googleapiclient.discovery
 
-def getdata():
+def get_youtube_video_id(url):
+    pattern = r'(?:v=|\/)([0-9A-Za-z_-]{11}).*'
+    match = re.search(pattern, url)
+    
+    if match:
+        return match.group(1)
+    else:
+        return None
+    
+url = "https://music.youtube.com/watch?v=WaFD7Gs75hQ"
+print(get_youtube_video_id(url))
+                           
+def getdata(link):
     # Disable OAuthlib's HTTPS verification when running locally.
     # *DO NOT* leave this option enabled in production.
-    os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+    os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "0"
 
     api_service_name = "youtube"
     api_version = "v3"
@@ -18,13 +30,14 @@ def getdata():
 
     request = youtube.videos().list(
         part="snippet",
-        id="puJVkAxr0l8"
+        id= get_youtube_video_id(link)
     )
     response = request.execute()
-    song_name = response.get('title')
-    artist = response.get('channelTitle')
+    channel_title = response['items'][0]['snippet']['channelTitle']
+    video_title = response['items'][0]['snippet']['title']
 
-    print(f"{song_name} {artist}")
+    # Remove " - Topic" from channeltitle if present
+    if " - Topic" in channel_title:
+        channel_title = channel_title.replace(" - Topic", "")
 
-if __name__ == "__main__":
-    getdata()
+    return channel_title,video_title

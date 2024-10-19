@@ -72,6 +72,30 @@ def index():
     
     return render_template('index.html')
 
+@app.route('/youtube', methods=['GET', 'POST'])
+def youtube():
+    if request.method == 'POST':
+        link = request.form.get('link')
+        
+        if not link:
+            flash('Please enter the Youtube Link', 'error')
+            return redirect(url_for('youtube'))
+        
+        artist ,title = googleapi.getdata(link)
+
+        process_artist = artist.replace(" ", "+")
+        process_title = title.replace(" ", "+")
+
+        lyrics_info = get_synced_lyrics(process_artist, process_title)
+        
+        if lyrics_info:
+            flash('Synced lyrics retrieved successfully!', 'success')
+            return render_template('youtube.html', lyrics=lyrics_info)
+
+        flash('Could not retrieve lyrics. Please check the Link.', 'error')
+    
+    return render_template('youtube.html')
+
 @app.route('/download/<filename>')
 def download_file(filename):
     return send_from_directory(LYRICS_DIR, filename, as_attachment=True)
