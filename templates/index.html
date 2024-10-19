@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synced Lyrics Finder</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Synced Lyrics Finder</h1>
+        <form method="POST">
+            <div class="form-group">
+                <label for="artist">Artist:</label>
+                <input type="text" class="form-control" id="artist" name="artist" required>
+            </div>
+            <div class="form-group">
+                <label for="title">Music Title:</label>
+                <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Get Lyrics</button>
+        </form>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% if lyrics %}
+            <h3>Song: {{ lyrics.song_name }}</h3>
+            <h4>Artist: {{ lyrics.artist }}</h4>
+            <h5>Synced Lyrics:</h5>
+            <pre>{{ lyrics.synced_lyrics }}</pre>
+            <a href="{{ url_for('download_file', filename=lyrics.file_path.split('/')[-1]) }}" class="btn btn-success">Download Lyrics</a>
+        {% endif %}
+    </div>
+</body>
+</html>
