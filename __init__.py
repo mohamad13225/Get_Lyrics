@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, sen
 import requests
 import json
 import os
+import googleapi
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Change this to a random secret key
@@ -22,7 +23,7 @@ def get_synced_lyrics(artist_name, track_name):
         album_name = data.get('albumName')
         
         # Save synced lyrics to a .lrc file
-        filename = f"{song_name}.lrc"  # Changed to .lrc
+        filename = f"{artist_name}_{track_name}.lrc"  # Changed to .lrc
         file_path = os.path.join(LYRICS_DIR, filename)
         with open(file_path, 'w', encoding='utf-8') as file:
             file.write(f"[ar:{artist}]\n")
@@ -70,6 +71,30 @@ def index():
         flash('Could not retrieve lyrics. Please check the artist and title.', 'error')
     
     return render_template('index.html')
+
+@app.route('/youtube', methods=['GET', 'POST'])
+def youtube():
+    if request.method == 'POST':
+        link = request.form.get('link')
+        
+        if not link:
+            flash('Please enter the Youtube Link', 'error')
+            return redirect(url_for('youtube'))
+        
+        artist ,title = googleapi.getdata(link)
+
+        process_artist = artist.replace(" ", "+")
+        process_title = title.replace(" ", "+")
+
+        lyrics_info = get_synced_lyrics(process_artist, process_title)
+        
+        if lyrics_info:
+            flash('Synced lyrics retrieved successfully!', 'success')
+            return render_template('youtube.html', lyrics=lyrics_info)
+
+        flash('Could not retrieve lyrics. Please check the Link.', 'error')
+    
+    return render_template('youtube.html')
 
 @app.route('/download/<filename>')
 def download_file(filename):
