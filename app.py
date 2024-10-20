@@ -22,8 +22,7 @@ def get_synced_lyrics(artist_name, track_name):
         synced_lyrics = data.get('syncedLyrics')
         album_name = data.get('albumName')
         
-        # Save synced lyrics to a .lrc file
-        filename = f"{artist_name}_{track_name}.lrc"  # Changed to .lrc
+        filename = f"{artist_name}_{track_name}.lrc"
         file_path = os.path.join(LYRICS_DIR, filename)
         with open(file_path, 'w', encoding='utf-8') as file:
             file.write(f"[ar:{artist}]\n")
@@ -101,6 +100,5 @@ def download_file(filename):
     return send_from_directory(LYRICS_DIR, filename, as_attachment=True)
 
 if __name__ == '__main__':
-    # Create lrc directory if it doesn't exist
     os.makedirs(LYRICS_DIR, exist_ok=True)
     app.run(debug=True)
