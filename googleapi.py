@@ -17,13 +17,11 @@ url = "https://music.youtube.com/watch?v=WaFD7Gs75hQ"
 print(get_youtube_video_id(url))
                            
 def getdata(link):
-    # Disable OAuthlib's HTTPS verification when running locally.
-    # *DO NOT* leave this option enabled in production.
     os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "0"
 
     api_service_name = "youtube"
     api_version = "v3"
-    DEVELOPER_KEY = "AIzaSyB5HOyipuWNrwSZy1n1CHvR4sTsJoe0gRA"
+    DEVELOPER_KEY = "unknown" # Put YOur API Key Here
 
     youtube = googleapiclient.discovery.build(
         api_service_name, api_version, developerKey = DEVELOPER_KEY)
@@ -36,7 +34,6 @@ def getdata(link):
     channel_title = response['items'][0]['snippet']['channelTitle']
     video_title = response['items'][0]['snippet']['title']
 
-    # Remove " - Topic" from channeltitle if present
     if " - Topic" in channel_title:
         channel_title = channel_title.replace(" - Topic", "")
 
