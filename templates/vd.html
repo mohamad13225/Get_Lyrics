@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Downloader</title>
+</head>
+<body>
+    <h1>YouTube Downloader</h1>
+    <form action="/download" method="POST">
+        <label for="url">YouTube URL:</label>
+        <input type="text" id="url" name="url" required>
+        
+        <label for="content_type">Content Type:</label>
+        <select name="content_type" id="content_type">
+            <option value="audio">Audio</option>
+            <option value="video">Video</option>
+        </select>
+
+        <label for="quality">Quality:</label>
+        <select name="quality" id="quality">
+            <optgroup label="Audio">
+                <option value="128">128 kbps</option>
+                <option value="320">320 kbps</option>
+            </optgroup>
+            <optgroup label="Video">
+                <option value="720p">720p</option>
+                <option value="480p">480p</option>
+                <option value="360p">360p</option>
+            </optgroup>
+        </select>
+
+        <button type="submit">Download</button>
+    </form>
+</body>
+</html>
